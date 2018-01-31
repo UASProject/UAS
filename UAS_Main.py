@@ -9,9 +9,10 @@ from ctypes import *
 # Initialize Pixy Interpreter thread #
 pixy_init()
 
-x,y=GetBlocks()
-print(x)
-print(y)
+while 1:
+	x,y=GetBlocks()
+
 #servo_close()
+
 #lightbulb_detach()
 
