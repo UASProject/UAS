@@ -1,3 +1,4 @@
+
 import time
 import atexit
 import RPi.GPIO as GPIO
@@ -43,7 +44,7 @@ def servo_close():
 		time.sleep(.1)
 
 	GPIO.cleanup()
-
+'''
 def arm_and_takeoff(aTargetAltitude):
     """Arms vehicle and fly to aTargetAltitude."""
     
@@ -60,10 +61,10 @@ def arm_and_takeoff(aTargetAltitude):
     vehicle.armed = True
 
     while not vehicle.armed:
-    print(" Waiting for arming...")
-    time.sleep(1)
+		print(" Waiting for arming...")
+		time.sleep(1)
     
-    print("Taking off!")
+	print("Taking off!")
     vehicle.simple_takeoff(aTargetAltitude) # Take off to target altitude
     
     # Wait until the vehicle reaches a safe height before processing the goto (otherwise the command
@@ -103,7 +104,7 @@ def goto(xdistance, ydistance, gotoFunction=vehicle.simple_goto):
             break;
         time.sleep(2)
 
-
+'''
 
 def GetBlocks():
 
@@ -126,16 +127,72 @@ def GetBlocks():
 		
 		if count > 0:
 		# Blocks found #
-			print 'frame %3d:' % (frame)
+			#print 'frame %3d:' % (frame)
 			frame = frame + 1
 			for index in range (0, count):
 				x=blocks[index].x
 				y=blocks[index].y
-				print '[BLOCK_TYPE=%d SIG=%d X=%3d Y=%3d WIDTH=%3d HEIGHT=%3d]' % (blocks[index].type, blocks[index].signature, blocks[index].x, blocks[index].y, blocks[index].width, blocks[index].height)
-				print(x)
-				print(y)
-				time.sleep(.5)
+				#print '[BLOCK_TYPE=%d SIG=%d X=%3d Y=%3d WIDTH=%3d HEIGHT=%3d]' % (blocks[index].type, blocks[index].signature, blocks[index].x, blocks[index].y, blocks[index].width, blocks[index].height)
+				#print(x)
+				#print(y)
+				time.sleep(1)
 				return x,y;
+
+def Centering():
+	while True:
+		Xaxis=3;
+		Yaxis=3;
+		x=5;
+		y=6;
+		x,y=GetBlocks();
+		
+		if x< 145:		#sets Xaxis based on Pixy coordinate
+			Xaxis= 1;
+			print('move west')
+		elif x>175:
+			Xaxis=-1;
+			print('move east')
+		else:
+			Xaxis=0;
+			print('X is centered')
+
+		if y< 105:		#sets Yaxis based on Pixy coordinate
+			Yaxis=-1;
+			print('move north')
+		elif y>135:
+			Yaxis=1;
+			print('move south')
+		else:
+			Yaxis=0;
+			print('Y is centered')
+			
+		print('*************************')
+			
+		if Xaxis==0 and Yaxis==0:		#Exits if within hit box
+			print('all centered...SUCK IT KEVIN')
+			break;
+			'''
+		if Xaxis==1:					#gives directions based on axis values
+			print('move east')
+		elif Xaxis==-1:
+			print('move west')
+		
+		if Yaxis==1:
+			print('move north')
+		elif Yaxis==-1:
+			print('move south')
+			'''
+	time.sleep(1)
+		
+
+
+
+
+
+
+
+
+
 
 
 

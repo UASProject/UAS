@@ -1,6 +1,6 @@
-from UAS_Functions import lightbulb_detach, turnOffMotors,servo_close,GetBlocks,arm_and_takeoff
+from UAS_Functions import lightbulb_detach, turnOffMotors,servo_close,GetBlocks,Centering #arm_and_takeoff
 from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor, Adafruit_StepperMotor
-from dronekit import connect, VehicleMode, LocationGlobalRelative
+#from dronekit import connect, VehicleMode, LocationGlobalRelative
 import time
 import atexit
 import RPi.GPIO as GPIO
@@ -9,12 +9,12 @@ from ctypes import *
 
 # Initialize Pixy Interpreter thread #
 pixy_init()
+global Xaxis, Yaxis
 
-<<<<<<< HEAD
-while 1:
-	x,y=GetBlocks()
+Centering()
 
-=======
+
+'''
 import argparse
 parser = argparse.ArgumentParser(description='Commands vehicle using vehicle.simple_goto.')
 parser.add_argument('--connect',
@@ -22,6 +22,7 @@ parser.add_argument('--connect',
 args = parser.parse_args()
 
 connection_string = args.connect
+'''
 
 # Connect to the Vehicle
 '''
@@ -38,8 +39,11 @@ vehicle.airspeed = 3 #set default speed
 x,y=GetBlocks()
 print(x)
 print(y)
+
+
+
 '''
->>>>>>> c2f49b347046e9663947edd00dbd775ad6594f45
+
 #servo_close()
 
 #lightbulb_detach()
