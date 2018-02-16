@@ -4,6 +4,7 @@ import atexit
 import RPi.GPIO as GPIO
 from pixy import *
 from ctypes import *
+from dronekit import connect, VehicleMode
 
 from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor, Adafruit_StepperMotor
 
@@ -51,12 +52,27 @@ def servo_close():
 	GPIO.cleanup()
 
 
-#################  Takeoff Function ####################
 
+#################  Connection Function ####################
 
-def arm_and_takeoff(aTargetAltitude):
-    """Arms vehicle and fly to aTargetAltitude."""
-    
+def connect_it():
+
+	#connect to PI through serial
+	import argparse  
+	parser = argparse.ArgumentParser(description='Print out vehicle state information. Connects to SITL on local PC by default.')
+	parser.add_argument('--connect', 
+					   help="vehicle connection target string. If not specified, SITL automatically started and used.")
+	args = parser.parse_args()
+
+	connection_string = args.connect
+
+	print("\nConnecting to vehicle on: %s" % connection_string)
+	vehicle = connect(connection_string, wait_ready=True)
+	return vehicle
+
+#################  Arming Function ####################
+
+def Arm_it(vehicle):
     print("Basic pre-arm checks")
     # Don't let the user try to arm until autopilot is ready
     while not vehicle.is_armable:
@@ -72,8 +88,14 @@ def arm_and_takeoff(aTargetAltitude):
     while not vehicle.armed:
 		print(" Waiting for arming...")
 		time.sleep(1)
-    
-	print("Taking off!")
+	
+	#print("connected and armed")
+		
+#################  Takeoff Function ####################		
+		
+def takeoff(aTargetAltitude):
+    """Arms vehicle and fly to aTargetAltitude."""    
+    print("Taking off!")
     vehicle.simple_takeoff(aTargetAltitude) # Take off to target altitude
     
     # Wait until the vehicle reaches a safe height before processing the goto (otherwise the command
