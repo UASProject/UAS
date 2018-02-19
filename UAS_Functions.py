@@ -151,8 +151,9 @@ def GetBlocks():
 				y=blocks[index].y
                 SIG=blocks[index].signature
 				#print '[BLOCK_TYPE=%d SIG=%d X=%3d Y=%3d WIDTH=%3d HEIGHT=%3d]' % (blocks[index].type, blocks[index].signature, blocks[index].x, blocks[index].y, blocks[index].width, blocks[index].height)
-				#print(x)
-				#print(y)
+				print(x)
+				print(y)
+                print(SIG)
 				time.sleep(1)
 				return x,y,blocks[index].signature;
 
