@@ -23,6 +23,7 @@ def lightbulb_detach():
 	myStepper.setSpeed(120)
 	for i in range(12):
 		myStepper.step(100, Adafruit_MotorHAT.BACKWARD, Adafruit_MotorHAT.DOUBLE)
+    myStepper.run(mh.RELEASE)
 
 #################  Servo control ####################
 
@@ -90,6 +91,17 @@ def Arm_it(vehicle):
 		time.sleep(1)
 	
 	#print("connected and armed")
+
+#################  Parameters Function ####################
+
+def Get_Parameters()
+    print "Get some vehicle attribute values:"
+    print " GPS: %s" % vehicle.gps_0
+    print " Battery: %s" % vehicle.battery
+    print " Last Heartbeat: %s" % vehicle.last_heartbeat
+    print " Is Armable?: %s" % vehicle.is_armable
+    print " System status: %s" % vehicle.system_status.state
+    print " Mode: %s" % vehicle.mode.name    # settable
 		
 #################  Takeoff Function ####################		
 		
@@ -137,63 +149,87 @@ def GetBlocks():
 			for index in range (0, count):
 				x=blocks[index].x
 				y=blocks[index].y
+                SIG=blocks[index].signature
 				#print '[BLOCK_TYPE=%d SIG=%d X=%3d Y=%3d WIDTH=%3d HEIGHT=%3d]' % (blocks[index].type, blocks[index].signature, blocks[index].x, blocks[index].y, blocks[index].width, blocks[index].height)
 				#print(x)
 				#print(y)
 				time.sleep(1)
-				return x,y;
+				return x,y,blocks[index].signature;
 
 #################  Navigation Function ####################
 
 def Centering():
-	while True:
+    while True:
 		Xaxis=3;
 		Yaxis=3;
 		x=5;
 		y=6;
-		x,y=GetBlocks();
-		
-		if x< 145:		#sets Xaxis based on Pixy coordinate
-			Xaxis= 1;
-			print('move west')
-		elif x>175:
-			Xaxis=-1;
-			print('move east')
-		else:
-			Xaxis=0;
-			print('X is centered')
+        i=1
+        North=-.5
+        South=.5
+        West=-.5
+        East=.5
+        Zaxis=0
+        duration=.5
+        for i in range 3:
+            x,y,SIG=GetBlocks();
+            while SIG != 4:
+                
+                if x< 145:		#sets Xaxis based on Pixy coordinate
+                    Xaxis= 1;
+                    print('move west')
+                #send_ned_velocity(west, 0, Zaxis, duration)
+                
+                elif x>175:
+                    Xaxis=-1;
+                    print('move east')
+                #send_ned_velocity(East, 0, Zaxis, duration)
+                else:
+                    Xaxis=0;
+                    print('X is centered')
 
-		if y< 105:		#sets Yaxis based on Pixy coordinate
-			Yaxis=-1;
-			print('move north')
-		elif y>135:
-			Yaxis=1;
-			print('move south')
-		else:
-			Yaxis=0;
-			print('Y is centered')
-			
-		print('*************************')
-			
-		if Xaxis==0 and Yaxis==0:		#Exits if within hit box
-			print('all centered...SUCK IT KEVIN')
-			break;
-			'''
-		if Xaxis==1:					#gives directions based on axis values
-			print('move east')
-		elif Xaxis==-1:
-			print('move west')
-		
-		if Yaxis==1:
-			print('move north')
-		elif Yaxis==-1:
-			print('move south')
-			'''
+                if y< 105:		#sets Yaxis based on Pixy coordinate
+                    Yaxis=-1;
+                    print('move north')
+                        #send_ned_velocity(0, North, Zaxis, duration)
+                elif y>135:
+                    Yaxis=1;
+                    print('move south')
+                #send_ned_velocity(0, South, Zaxis, duration)
+                else:
+                    Yaxis=0;
+                    print('Y is centered')
+                
+                print('*************************')
+                
+                if Xaxis==0 and Yaxis==0:		#Exits if within hit box
+                    print('all centered...SUCK IT KEVIN')
+                    SIG= SIG +1;
+                    
+            break;
+
 	time.sleep(1)
 		
 
 
+def send_ned_velocity(velocity_x, velocity_y, velocity_z, duration):
+    """
+        Move vehicle in direction based on specified velocity vectors.
+        """
+    msg = vehicle.message_factory.set_position_target_local_ned_encode(
+           0,       # time_boot_ms (not used)
+           0, 0,    # target system, target component
+           mavutil.mavlink.MAV_FRAME_LOCAL_NED, # frame
+           0b0000111111000111, # type_mask (only speeds enabled)
+           0, 0, 0, # x, y, z positions (not used)
+           velocity_x, velocity_y, velocity_z, # x, y, z velocity in m/s
+           0, 0, 0, # x, y, z acceleration (not supported yet, ignored in GCS_Mavlink)
+           0, 0)    # yaw, yaw_rate (not supported yet, ignored in GCS_Mavlink))
 
+# send command to vehicle on 1 Hz cycle
+    for x in range(0,duration):
+        vehicle.send_mavlink(msg)
+        time.sleep(1)
 
 
 
