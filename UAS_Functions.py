@@ -174,7 +174,7 @@ def Centering():
         duration=.5
         for i in range 3:
             x,y,SIG=GetBlocks();
-            while SIG != 4:
+            while SIG == i && != 4:
                 
                 if x< 145:		#sets Xaxis based on Pixy coordinate
                     Xaxis= 1;
