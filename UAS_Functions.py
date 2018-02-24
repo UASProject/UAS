@@ -23,7 +23,7 @@ def lightbulb_detach():
 	myStepper.setSpeed(120)
 	for i in range(12):
 		myStepper.step(100, Adafruit_MotorHAT.BACKWARD, Adafruit_MotorHAT.DOUBLE)
-    myStepper.run(mh.RELEASE)
+	myStepper.run(mh.RELEASE)
 
 #################  Servo control ####################
 
@@ -94,7 +94,7 @@ def Arm_it(vehicle):
 
 #################  Parameters Function ####################
 
-def Get_Parameters()
+def Get_Parameters(vehicle):
     print "Get some vehicle attribute values:"
     print " GPS: %s" % vehicle.gps_0
     print " Battery: %s" % vehicle.battery
@@ -134,82 +134,89 @@ def GetBlocks():
 		("height", c_uint),
 		("angle", c_uint) ]
 	
-	blocks = BlockArray(100)
+	blocks = BlockArray(3)
 	frame  = 0
 	
 	# Wait for blocks #
+
 	while 1:
-	
-		count = pixy_get_blocks(100, blocks)
-		
+		count = pixy_get_blocks(3, blocks)
 		if count > 0:
 		# Blocks found #
-			#print 'frame %3d:' % (frame)
+#			print 'frame %3d:' % (frame)
 			frame = frame + 1
 			for index in range (0, count):
-				x=blocks[index].x
-				y=blocks[index].y
-                SIG=blocks[index].signature
-				#print '[BLOCK_TYPE=%d SIG=%d X=%3d Y=%3d WIDTH=%3d HEIGHT=%3d]' % (blocks[index].type, blocks[index].signature, blocks[index].x, blocks[index].y, blocks[index].width, blocks[index].height)
-				print(x)
-				print(y)
-                print(SIG)
-				time.sleep(1)
-				return x,y,blocks[index].signature;
+				x=int(blocks[0].x)
+				y=int(blocks[0].y)
+				g=int(blocks[0].signature)
+				x2=int(blocks[1].x)
+				y2=int(blocks[1].y)
+				g2=int(blocks[1].signature)
 
+
+#				print '[BLOCK_TYPE=%d SIG=%d X=%3d Y=%3d WIDTH=%3d HEIGHT=%3d]' % (blocks[index].type, blocks[index].signature, blocks[index].x, blocks[index].y, blocks[index].width, blocks[index].height)
+#				print("x1",x)
+#				print("x2",x2)
+#				print("y1",y)
+#				print("signature: ",g)
+#				print("count: ",count)
+				t=blocks[index]
+				time.sleep(1)
+				return x,y,g,x2,y2,g2;
+	
 #################  Navigation Function ####################
 
 def Centering():
-    while True:
-		Xaxis=3;
-		Yaxis=3;
-		x=5;
-		y=6;
-        i=1
-        North=-.5
-        South=.5
-        West=-.5
-        East=.5
-        Zaxis=0
-        duration=.5
-        for i in range 3:
-            x,y,SIG=GetBlocks();
-            while SIG == i && != 4:
-                
-                if x< 145:		#sets Xaxis based on Pixy coordinate
-                    Xaxis= 1;
-                    print('move west')
-                #send_ned_velocity(west, 0, Zaxis, duration)
-                
-                elif x>175:
-                    Xaxis=-1;
-                    print('move east')
-                #send_ned_velocity(East, 0, Zaxis, duration)
-                else:
-                    Xaxis=0;
-                    print('X is centered')
+	print("Centering Function:")
+	while True:
+#		Xaxis=3;
+#		Yaxis=3;
+#		x=5;
+#		y=6;
+		
+#		North=-.5
+#		South=.5
+#		West=-.5
+#		East=.5
+#		Zaxis=0
+#		duration=.5
+				
+		x,y,g,x2,y2,g2=GetBlocks();
+		print("x",x,"y",y,"g",g,"x2",x2,"y2",y2,"g2",g2)
+#		print(x,y)
+						
+		if x< 145:		#sets Xaxis based on Pixy coordinate
+			Xaxis= 1;
+			print('move west')
+						#send_ned_velocity(west, 0, Zaxis, duration)
+						
+		elif x>175:
+			Xaxis=-1;
+			print('move east')
+						#send_ned_velocity(East, 0, Zaxis, duration)
+		else:
+			Xaxis=0;
+			print('X is centered')
 
-                if y< 105:		#sets Yaxis based on Pixy coordinate
-                    Yaxis=-1;
-                    print('move north')
-                        #send_ned_velocity(0, North, Zaxis, duration)
-                elif y>135:
-                    Yaxis=1;
-                    print('move south')
-                #send_ned_velocity(0, South, Zaxis, duration)
-                else:
-                    Yaxis=0;
-                    print('Y is centered')
-                
-                print('*************************')
-                
-                if Xaxis==0 and Yaxis==0:		#Exits if within hit box
-                    print('all centered...SUCK IT KEVIN')
-                    SIG= SIG +1;
-                    
-            break;
+		if y< 105:		#sets Yaxis based on Pixy coordinate
+			Yaxis=-1;
+			print('move north')
+								#send_ned_velocity(0, North, Zaxis, duration)
+		elif y>135:
+			Yaxis=1;
+			print('move south')
+						#send_ned_velocity(0, South, Zaxis, duration)
+		else:
+			Yaxis=0;
+			print('Y is centered')
+						
+		print('*************************')
+						
+		if Xaxis==0 and Yaxis==0:		#Exits if within hit box
+			print('all centered...SUCK IT KEVIN')
+			break;
 
-	time.sleep(1)
+		time.sleep(1)
 		
 
 
