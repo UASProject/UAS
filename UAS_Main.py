@@ -2,6 +2,7 @@ from UAS_Functions import lightbulb_detach, turnOffMotors,servo_close, Arm_it, c
 from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor, Adafruit_StepperMotor
 from dronekit import connect, VehicleMode #, LocationGlobalRelative
 from BreadCrumb import BreadCrumb,Centering,GetBlocks
+from BaseOps import GetBlocks_Base, Cenering_Base,BaseOps
 import time
 import atexit
 import RPi.GPIO as GPIO
