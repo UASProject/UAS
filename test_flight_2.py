@@ -1,5 +1,5 @@
 
-from UAS_Functions import turnOffMotors, Arm_it, connect_it,Get_Parameters, takeoff,land_it
+from UAS_Functions import turnOffMotors, Arm_it, connect_it,Get_Parameters, takeoff,land_it,send_ned_velocity
 from dronekit import connect, VehicleMode #, LocationGlobalRelative
 import time
 import atexit
