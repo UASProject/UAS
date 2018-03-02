@@ -120,8 +120,11 @@ def takeoff(aTargetAltitude):
             break
         time.sleep(1)
 
+#################  Landing Function ####################
 
-
+def land_it():
+    print("landing...")
+    vehicle.mode = VehicleMode("LAND")
 
 
 
@@ -228,7 +231,7 @@ def Centering():
 
 		time.sleep(1)
 		
-
+'''
 
 def send_ned_velocity(velocity_x, velocity_y, velocity_z, duration):
     """
@@ -248,7 +251,6 @@ def send_ned_velocity(velocity_x, velocity_y, velocity_z, duration):
     for x in range(0,duration):
         vehicle.send_mavlink(msg)
         time.sleep(1)
-'''
 
 
 
