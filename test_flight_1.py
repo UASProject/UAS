@@ -1,4 +1,4 @@
-from UAS_Functions import turnOffMotors, Arm_it, connect_it,Get_Parameters, takeoff,land_it
+from UAS_Functions import Arm_it, connect_it,Get_Parameters#, takeoff,land_it
 from dronekit import connect, VehicleMode #, LocationGlobalRelative
 import time
 import atexit
@@ -7,17 +7,17 @@ from ctypes import *
 import sys
 
 vehicle=connect_it()    #Connect to Pixhawk via Pi
-Get_Parameters()        #Get start up parameters of UAS
+Get_Parameters(vehicle)        #Get start up parameters of UAS
 Arm_it(vehicle)        #arm the motors
-wait(1)
+time.sleep(5)
 
-desiredAlt=int(sys.args[1])
+desiredAlt=5
+'''
+takeoff(vehicle,desiredAlt)
 
-takeoff(desiredAlt)
+time.sleep(3)
 
-wait(5)
-
-land_it
+land_it(vehicle)
 
 vehicle.armed=False
-
+'''

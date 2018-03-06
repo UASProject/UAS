@@ -5,7 +5,8 @@ import RPi.GPIO as GPIO
 from pixy import *
 from ctypes import *
 from dronekit import connect, VehicleMode
-
+from pymavlink import mavutil
+'''
 from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor, Adafruit_StepperMotor
 
 mh=Adafruit_MotorHAT()
@@ -52,20 +53,13 @@ def servo_close():
 
 	GPIO.cleanup()
 
-
+'''
 
 #################  Connection Function ####################
 
-def connect_it():
+def connect_it(connection_string):
 
 	#connect to PI through serial
-	import argparse  
-	parser = argparse.ArgumentParser(description='Print out vehicle state information. Connects to SITL on local PC by default.')
-	parser.add_argument('--connect', 
-					   help="vehicle connection target string. If not specified, SITL automatically started and used.")
-	args = parser.parse_args()
-
-	connection_string = args.connect
 
 	print("\nConnecting to vehicle on: %s" % connection_string)
 	vehicle = connect(connection_string, wait_ready=True)
@@ -78,7 +72,8 @@ def Arm_it(vehicle):
     # Don't let the user try to arm until autopilot is ready
     while not vehicle.is_armable:
         print(" Waiting for vehicle to initialise...")
-        time.sleep(1)
+        print(vehicle.is_armable)
+	time.sleep(1)
     
 
     print("Arming motors")
@@ -105,7 +100,7 @@ def Get_Parameters(vehicle):
 		
 #################  Takeoff Function ####################		
 		
-def takeoff(aTargetAltitude):
+def takeoff(vehicle,aTargetAltitude):
     """Arms vehicle and fly to aTargetAltitude."""    
     print("Taking off!")
     vehicle.simple_takeoff(aTargetAltitude) # Take off to target altitude
@@ -115,6 +110,7 @@ def takeoff(aTargetAltitude):
     while True:
         print(" Altitude: ", vehicle.location.global_relative_frame.alt)
         if vehicle.location.global_relative_frame.alt>=aTargetAltitude*0.95:
+        
         #Trigger just below target alt.
             print("Reached target altitude")
             break
@@ -122,7 +118,7 @@ def takeoff(aTargetAltitude):
 
 #################  Landing Function ####################
 
-def land_it():
+def land_it(vehicle):
     print("landing...")
     vehicle.mode = VehicleMode("LAND")
 
@@ -132,8 +128,8 @@ def land_it():
 
 
 
-
 '''
+
 #################  Pixy Control Function ####################
 
 def GetBlocks():
@@ -233,7 +229,7 @@ def Centering():
 		
 '''
 
-def send_ned_velocity(velocity_x, velocity_y, velocity_z, duration):
+def send_ned_velocity(vehicle,velocity_x, velocity_y, velocity_z, duration):
     """
         Move vehicle in direction based on specified velocity vectors.
         """
