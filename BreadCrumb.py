@@ -2,14 +2,9 @@
 from pixy import *
 from ctypes import *
 import time
+from pymavlink import mavutil
 
-
-
-
-
-
-
-
+'''
 ################################ Get Blocks Function ################################
 
 def GetBlocks(DesiredSig):
@@ -49,39 +44,38 @@ def GetBlocks(DesiredSig):
 def Centering(DesiredSig):
     print("Centering Function:")
     while True:
-
+		spd = 1
+		duration = 1
+		Xcenter = 160
+		Ycenter = 120
+		HB = 15
         x,y= GetBlocks(DesiredSig)
                 
-        if x< 145:        #sets Xaxis based on Pixy coordinate
-            Xaxis= 1;
-            print('move west')
-        #send_ned_velocity(west, 0, Zaxis, duration)
-        
-        elif x>175:
-            Xaxis=-1;
-            print('move east')
-        #send_ned_velocity(East, 0, Zaxis, duration)
+        if x< (Xcenter - HB):        #sets Xaxis based on Pixy coordinate
+            Xaxis= spd;
+        elif x> (Xcenter + HB):
+            Xaxis=-spd;
         else:
             Xaxis=0;
             print('X is centered')
         
-        if y< 105:        #sets Yaxis based on Pixy coordinate
-            Yaxis=-1;
-            print('move north')
-        #send_ned_velocity(0, North, Zaxis, duration)
-        elif y>135:
-            Yaxis=1;
-            print('move south')
-        #send_ned_velocity(0, South, Zaxis, duration)
+        
+        if y< (Ycenter - HB):        #sets Yaxis based on Pixy coordinate
+            Yaxis=-spd;
+        elif y> (Ycenter + HB):
+            Yaxis=spd;
         else:
             Yaxis=0;
             print('Y is centered')
-    
-        print('*************************')
-        
-        if Xaxis==0 and Yaxis==0:        #Exits if within hit box
+            
+            
+		if Xaxis==0 and Yaxis==0:        #Exits if within hit box
             print('all centered...SUCK IT KEVIN')
             break;
+    
+        print('*************************')
+        send_ned_velocity(Xaxis, Yaxis, 0, duration)
+        
 
     time.sleep(1)
 ################################ Velocity ################################
@@ -103,25 +97,56 @@ def send_ned_velocity(velocity_x, velocity_y, velocity_z, duration):
            # send command to vehicle on 1 Hz cycle
     for x in range(0,duration):
     vehicle.send_mavlink(msg)
-    time.sleep(1)
+    time.sleep(1)	# Modify to scale duration time 
 
+'''
+################################ Yaw ################################
 
+def Auto_Yaw(vehicle,heading):
+	while 1:   
+		flag=0 
+    		direction = vehicle.heading
+    		print(direction)
 
-
-
+    		if direction <5 or direction> 355:
+			flag=1;
+			return flag;
+      			break; 
+   		elif direction < 180:
+      			direction = -1;
+    		else:
+      			direction = 1;
+    	
+    # create the CONDITION_YAW command using command_long_encode()
+    		msg = vehicle.message_factory.command_long_encode(
+        		0, 0,    # target system, target component
+        		mavutil.mavlink.MAV_CMD_CONDITION_YAW, #command
+        		0, #confirmation
+        		heading,    # param 1, yaw in degrees (0 is North)
+        		0,          # param 2, yaw speed deg/s
+        		direction,          # param 3, direction -1 ccw, 1 cw
+        		0, # param 4, relative offset 1, absolute angle 0
+        		0, 0, 0)    # param 5 ~ 7 not used
+    			# send command to vehicle
+    		vehicle.send_mavlink(msg)
+		time.sleep(2)
 
 ################################ BreadCrumb Function ################################
 
+'''
+def BreadCrumb(DesiredSig):
 
-def BreadCrumb()
     for i in range(0,2):
         if i ==0:
-            DesiredSig=10;  #12 in octal or 10 in decimal
+            DesiredSig=10; #12 in octal or 10 in decimal
         elif i==1:
             DesiredSig=11; #13 in octal
         else i=2:
             DesiredSig=12; #14 octal
         print(i)
+
         print(DesiredSig)
         Centering(DesiredSig)
-        i=i+1
+        Auto_Yaw(0)	# Reorient to North
+        #i=i+1
+'''

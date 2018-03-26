@@ -109,7 +109,7 @@ def takeoff(vehicle,aTargetAltitude):
     #  after Vehicle.simple_takeoff will execute immediately).
     while True:
         print(" Altitude: ", vehicle.location.global_relative_frame.alt)
-        if vehicle.location.global_relative_frame.alt>=aTargetAltitude*0.95:
+        if vehicle.location.global_relative_frame.alt>=aTargetAltitude*0.925:
         
         #Trigger just below target alt.
             print("Reached target altitude")
@@ -119,10 +119,10 @@ def takeoff(vehicle,aTargetAltitude):
 #################  Landing Function ####################
 
 def land_it(vehicle):
-    print("landing...")
-    vehicle.mode = VehicleMode("LAND")
-
-
+	print("landing...")
+	vehicle.mode = VehicleMode("LAND")
+	#print("Returning to Launch Position")
+	#vehicle.mode = VehicleMode("RTL")
 
 
 

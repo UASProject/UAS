@@ -15,9 +15,9 @@ parser.add_argument('--duration',help='set duration')
 parser.add_argument('--connect',help='set connection string i.e. 127.0.0.1:14550')
 
 args=parser.parse_args()
-desiredAlt=args.desiredAlt
-speed=args.speed
-duration=args.duration;
+desiredAlt=float(args.desiredAlt)
+speed=float(args.speed)
+duration=int(args.duration);
 connection_string=args.connect
 
 vehicle=connect_it(connection_string)    #Connect to Pixhawk via Pi
@@ -25,17 +25,17 @@ Get_Parameters(vehicle)        #Get start up parameters of UAS
 Arm_it(vehicle)        #arm the motors
 time.sleep(1)
 
-
+'''
 print'***************'
 print'\n battery level:',vehicle.battery
 
 print'DesiredAlt: ',desiredAlt
 print'speed: ',speed
 print'duration: ',duration
-'''
+
 takeoff(vehicle,desiredAlt)
 
-time.sleep(5)
+time.sleep(3)
 
 
 
@@ -43,32 +43,42 @@ time.sleep(5)
 
 print("testing x direction")
 send_ned_velocity(vehicle,speed,0,0,duration)
-time.sleep(5)
-
-print("testing -x direction")
-send_ned_velocity(vehicle,-speed,0,0,duration)
-time.sleep(5)
-
+time.sleep(3)
 
 print("testing y direction")
 send_ned_velocity(vehicle,0,speed,0,duration)
 time.sleep(5)
 
+print("testing -x direction")
+send_ned_velocity(vehicle,-speed,0,0,duration)
+time.sleep(3)
+
 print("testing -y direction")
 send_ned_velocity(vehicle,0,-speed,0,duration)
 time.sleep(5)
+'''
+
+print("testing y direction")
+send_ned_velocity(vehicle,0,speed,0,duration)
+time.sleep(3)
+
+print("testing -y direction")
+send_ned_velocity(vehicle,0,-speed,0,duration)
+time.sleep(3)
 
 print("testing both axis")
 send_ned_velocity(vehicle,speed,speed,0,duration)
-time.sleep(5)
+time.sleep(3)
 
 print("testing - both axis")
 send_ned_velocity(vehicle,-speed,-speed,0,duration)
-time.sleep(5)
-
+time.sleep(3)
+'''
 land_it(vehicle)
 
-vehicle.armed=False
+print'\n battery level:',vehicle.battery
+
+
 
 
 '''
