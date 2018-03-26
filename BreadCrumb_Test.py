@@ -49,55 +49,12 @@ def GetBlocks(DesiredSig):
                 else:
                     index=index +1
 
-################################ Centering Function ################################
 
-def Centering(vehicle,duration,DesiredSig):
-	print("Centering Function:")
-	flag=0;
-	while True:
-		spd = speed
-		duration = duration
-		Xcenter = 160
-		Ycenter = 120
-		HB = 15
-		x,y= GetBlocks(DesiredSig)
-                
-		if x< (Xcenter - HB):        #sets Xaxis based on Pixy coordinate
-			Xaxis= spd;
-		elif x> (Xcenter + HB):
-			Xaxis=-spd;
-		else:
-			Xaxis=0;
-			print('X is centered')
-        
-        
-		if y< (Ycenter - HB):        #sets Yaxis based on Pixy coordinate
-			Yaxis=-spd;
-		elif y> (Ycenter + HB):
-			Yaxis=spd;
-		else:
-			Yaxis=0;
-			print('Y is centered')
-            
-            
-		if Xaxis==0 and Yaxis==0:        #Exits if within hit box
-			print('all centered...SUCK IT KEVIN')
-			break;
-			flag=1;
-			return flag
-		else:
-			print('*************************')
-			print("Xaxis:",Xaxis)
-			print("Yaxis:",Yaxis)
-			send_ned_velocity(vehicle, Xaxis, Yaxis, 0, duration)
-			
-    
-        
-	time.sleep(.5)
 ########
 def Precision_Land(vehicle,duration,DesiredSig):
     print("Precision Land Function:")
     while True:
+		Auto_Yaw(vehicle)
         spd = speed
         duration = duration
         Xcenter = 160
@@ -136,9 +93,9 @@ def Precision_Land(vehicle,duration,DesiredSig):
 ################################ Velocity ################################
 
 def send_ned_velocity(vehicle,velocity_x, velocity_y, velocity_z, duration):
-    """
-        Move vehicle in direction based on specified velocity vectors.
-        """
+    
+    #Move vehicle in direction based on specified velocity vectors.
+        
     msg = vehicle.message_factory.set_position_target_local_ned_encode(
            0,       # time_boot_ms (not used)
            0, 0,    # target system, target component
@@ -210,7 +167,52 @@ def Auto_Yaw(vehicle):
 			direction = 1;
 		condition_yaw(vehicle, direction)
 
+################################ Centering Function ################################
 
+def Centering(vehicle,duration,DesiredSig):
+	print("Centering Function:")
+	flag=0;
+	while True:
+		Auto_Yaw(vehicle)
+		spd = speed
+		duration = duration
+		Xcenter = 160
+		Ycenter = 120
+		HB = 15
+		x,y= GetBlocks(DesiredSig)
+                
+		if x< (Xcenter - HB):        #sets Xaxis based on Pixy coordinate
+			Xaxis= spd;
+		elif x> (Xcenter + HB):
+			Xaxis=-spd;
+		else:
+			Xaxis=0;
+			print('X is centered')
+        
+        
+		if y< (Ycenter - HB):        #sets Yaxis based on Pixy coordinate
+			Yaxis=-spd;
+		elif y> (Ycenter + HB):
+			Yaxis=spd;
+		else:
+			Yaxis=0;
+			print('Y is centered')
+            
+            
+		if Xaxis==0 and Yaxis==0:        #Exits if within hit box
+			print('all centered...SUCK IT KEVIN')
+			break;
+			flag=1;
+			return flag
+		else:
+			print('*************************')
+			print("Xaxis:",Xaxis)
+			print("Yaxis:",Yaxis)
+			send_ned_velocity(vehicle, Xaxis, Yaxis, 0, duration)
+			
+    
+        
+	time.sleep(.5)
 ############################### Main ##################################
 
 
@@ -245,9 +247,8 @@ time.sleep(3)
 if flag ==1:
 	flag=Centering(vehicle,duration,desiredSig) #center at first signature
 	
-	flag =Auto_Yaw(vehicle)
 	land_it(vehicle)  #return to launch
-	Precision_Land(desiredSig)
+	Precision_Land(vehicle,duration,desiredSig)
 else:
 	time.sleep(1)
 
