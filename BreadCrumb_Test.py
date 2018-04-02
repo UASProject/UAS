@@ -34,11 +34,7 @@ def GetBlocks(DesiredSig):
     
     while 1:
         count = pixy_get_blocks(3, blocks)
-	if count < 1:
-	    print("lost signature, returning to launch")
-	    vehicle.mode=VehicleMode("RTL")
-	    break;       
-	else:
+	if count > 1:
             # Blocks found #
             #            print 'frame %3d:' % (frame)
             frame = frame + 1
@@ -247,6 +243,7 @@ send_ned_velocity(vehicle,0, 0, 0, 1)
 time.sleep(1)
 flag =Auto_Yaw(vehicle)
 time.sleep(3)
+
 
 if flag ==1:
 	flag=Centering(vehicle,duration,desiredSig) #center at first signature
