@@ -34,7 +34,11 @@ def GetBlocks(DesiredSig):
     
     while 1:
         count = pixy_get_blocks(3, blocks)
-        if count > 0:
+	if count < 1:
+	    print("lost signature, returning to launch")
+	    vehicle.mode=VehicleMode("RTL")
+	    break;       
+	else:
             # Blocks found #
             #            print 'frame %3d:' % (frame)
             frame = frame + 1
@@ -54,7 +58,7 @@ def GetBlocks(DesiredSig):
 def Precision_Land(vehicle,duration,DesiredSig):
     print("Precision Land Function:")
     while True:
-		Auto_Yaw(vehicle)
+	Auto_Yaw(vehicle)
         spd = speed
         duration = duration
         Xcenter = 160
@@ -122,7 +126,7 @@ def condition_yaw(vehicle, direction):
         mavutil.mavlink.MAV_CMD_CONDITION_YAW, #command
         0, #confirmation
         0,    # param 1, yaw in degrees (0 is North)
-        0,          # param 2, yaw speed deg/s
+        5,          # param 2, yaw speed deg/s
         direction,          # param 3, direction -1 ccw, 1 cw
         0, # param 4, relative offset 1, absolute angle 0
         0, 0, 0)    # param 5 ~ 7 not used
@@ -248,7 +252,7 @@ if flag ==1:
 	flag=Centering(vehicle,duration,desiredSig) #center at first signature
 	
 	land_it(vehicle)  #return to launch
-	Precision_Land(vehicle,duration,desiredSig)
+#	Precision_Land(vehicle,duration,desiredSig)
 else:
 	time.sleep(1)
 
