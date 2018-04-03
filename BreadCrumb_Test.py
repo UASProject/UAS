@@ -34,7 +34,7 @@ def GetBlocks(DesiredSig):
     
     while 1:
         count = pixy_get_blocks(3, blocks)
-	if count > 1:
+	if count > 0:
             # Blocks found #
             #            print 'frame %3d:' % (frame)
             frame = frame + 1
@@ -59,9 +59,9 @@ def Precision_Land(vehicle,duration,DesiredSig):
         duration = duration
         Xcenter = 160
         Ycenter = 120
-        HB = 15
+        HB = 30
         x,y= GetBlocks(DesiredSig)
-        
+     	print(x,y)   
         if x< (Xcenter - HB):        #sets Xaxis based on Pixy coordinate
 	        Xaxis= spd;
         elif x> (Xcenter + HB):
@@ -173,12 +173,12 @@ def Centering(vehicle,duration,DesiredSig):
 	print("Centering Function:")
 	flag=0;
 	while True:
-		Auto_Yaw(vehicle)
 		spd = speed
 		duration = duration
 		Xcenter = 160
 		Ycenter = 120
-		HB = 15
+		HB = 30
+		print('get blocks')
 		x,y= GetBlocks(DesiredSig)
                 
 		if x< (Xcenter - HB):        #sets Xaxis based on Pixy coordinate
@@ -209,7 +209,8 @@ def Centering(vehicle,duration,DesiredSig):
 			print("Xaxis:",Xaxis)
 			print("Yaxis:",Yaxis)
 			send_ned_velocity(vehicle, Xaxis, Yaxis, 0, duration)
-			
+			Auto_Yaw(vehicle)
+
     
         
 	time.sleep(.5)
@@ -242,14 +243,14 @@ takeoff(vehicle,desiredAlt)
 send_ned_velocity(vehicle,0, 0, 0, 1)
 time.sleep(1)
 flag =Auto_Yaw(vehicle)
-time.sleep(3)
+time.sleep(2)
 
 
 if flag ==1:
 	flag=Centering(vehicle,duration,desiredSig) #center at first signature
 	
 	land_it(vehicle)  #return to launch
-#	Precision_Land(vehicle,duration,desiredSig)
+	Precision_Land(vehicle,duration,desiredSig)
 else:
 	time.sleep(1)
 
