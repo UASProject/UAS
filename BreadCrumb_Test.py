@@ -54,13 +54,23 @@ def GetBlocks(DesiredSig):
 def Precision_Land(vehicle,duration,DesiredSig):
     print("Precision Land Function:")
     while True:
+<<<<<<< HEAD
+=======
+	Auto_Yaw(vehicle)
+>>>>>>> b2377948601590990517a14e7ea39ef4674f0c76
         spd = speed
         duration = duration
         Xcenter = 160
         Ycenter = 120
+<<<<<<< HEAD
         HB = 20
         x,y= GetBlocks(DesiredSig)
 
+=======
+        HB = 30
+        x,y= GetBlocks(DesiredSig)
+     	print(x,y)   
+>>>>>>> b2377948601590990517a14e7ea39ef4674f0c76
         if x< (Xcenter - HB):        #sets Xaxis based on Pixy coordinate
 	        Xaxis= spd;
         elif x> (Xcenter + HB):

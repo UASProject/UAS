@@ -132,10 +132,10 @@ def takeoff(vehicle,aTargetAltitude):
 #################  Landing Function ####################
 
 def land_it(vehicle):
-	print("landing...")
-	vehicle.mode = VehicleMode("LAND")
-	#print("Returning to Launch Position")
-	#vehicle.mode = VehicleMode("RTL")
+	#print("landing...")
+	#vehicle.mode = VehicleMode("LAND")
+	print("Returning to Launch Position")
+	vehicle.mode = VehicleMode("RTL")
 
 
 

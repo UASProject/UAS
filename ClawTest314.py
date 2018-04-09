@@ -71,6 +71,7 @@ def servo_prep():
 
 ##################MAIN################
 
+<<<<<<< HEAD
 #servo_loosen()
 #servo_tighten()
 #lightbulb_detach()
@@ -78,5 +79,14 @@ def servo_prep():
 #servo_prep()
 lightbulb_attach()
 servo_loosen()
+=======
+servo_loosen()
+servo_tighten()
+#lightbulb_detach()
+
+#servo_prep()
+#lightbulb_attach()
+#servo_loosen()
+>>>>>>> b2377948601590990517a14e7ea39ef4674f0c76
 
 turnOffMotors()
