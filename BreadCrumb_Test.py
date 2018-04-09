@@ -34,7 +34,7 @@ def GetBlocks(DesiredSig):
     
     while 1:
         count = pixy_get_blocks(3, blocks)
-        if count > 0:
+	if count > 0:
             # Blocks found #
             #            print 'frame %3d:' % (frame)
             frame = frame + 1
@@ -54,14 +54,13 @@ def GetBlocks(DesiredSig):
 def Precision_Land(vehicle,duration,DesiredSig):
     print("Precision Land Function:")
     while True:
-		Auto_Yaw(vehicle)
         spd = speed
         duration = duration
         Xcenter = 160
         Ycenter = 120
-        HB = 15
+        HB = 20
         x,y= GetBlocks(DesiredSig)
-        
+
         if x< (Xcenter - HB):        #sets Xaxis based on Pixy coordinate
 	        Xaxis= spd;
         elif x> (Xcenter + HB):
@@ -122,7 +121,7 @@ def condition_yaw(vehicle, direction):
         mavutil.mavlink.MAV_CMD_CONDITION_YAW, #command
         0, #confirmation
         0,    # param 1, yaw in degrees (0 is North)
-        0,          # param 2, yaw speed deg/s
+        5,          # param 2, yaw speed deg/s
         direction,          # param 3, direction -1 ccw, 1 cw
         0, # param 4, relative offset 1, absolute angle 0
         0, 0, 0)    # param 5 ~ 7 not used
@@ -156,7 +155,7 @@ def Auto_Yaw(vehicle):
 	flag=0;
 	while 1:
 		direction = vehicle.heading
-		if direction < 5 or direction > 355:
+		if direction < 15 or direction > 345:
 			flag =1
 			print("North reached")
 			return flag
@@ -173,12 +172,12 @@ def Centering(vehicle,duration,DesiredSig):
 	print("Centering Function:")
 	flag=0;
 	while True:
-		Auto_Yaw(vehicle)
 		spd = speed
 		duration = duration
 		Xcenter = 160
 		Ycenter = 120
-		HB = 15
+		HB = 30
+		print('get blocks')
 		x,y= GetBlocks(DesiredSig)
                 
 		if x< (Xcenter - HB):        #sets Xaxis based on Pixy coordinate
@@ -209,7 +208,8 @@ def Centering(vehicle,duration,DesiredSig):
 			print("Xaxis:",Xaxis)
 			print("Yaxis:",Yaxis)
 			send_ned_velocity(vehicle, Xaxis, Yaxis, 0, duration)
-			
+			Auto_Yaw(vehicle)
+
     
         
 	time.sleep(.5)
@@ -239,14 +239,15 @@ Arm_it(vehicle)        #arm the motors
 time.sleep(3)
 
 takeoff(vehicle,desiredAlt)
-send_ned_velocity(vehicle,0, 0, 0, 1)
+send_ned_velocity(vehicle,0, 0, 0, 1)#dummy movement command--initialize mov					ement
 time.sleep(1)
 flag =Auto_Yaw(vehicle)
-time.sleep(3)
+time.sleep(2)
+
 
 if flag ==1:
 	flag=Centering(vehicle,duration,desiredSig) #center at first signature
-	
+	print(vehicle.heading)	
 	land_it(vehicle)  #return to launch
 	Precision_Land(vehicle,duration,desiredSig)
 else:

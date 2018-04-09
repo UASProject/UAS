@@ -97,6 +97,19 @@ def Get_Parameters(vehicle):
     print " Is Armable?: %s" % vehicle.is_armable
     print " System status: %s" % vehicle.system_status.state
     print " Mode: %s" % vehicle.mode.name    # settable
+    
+#################  Home Location Function ####################
+
+def Get_Home_Loc(vehicle):
+	while not vehicle.home_location:
+			cmds+vehicle.commands
+			cmds.download()
+			cmds.wait_ready()
+			if not vehicle.home_location:
+				print( "waiting for home location...")
+	home_loc=vehicle.home_location
+	return home_loc
+
 		
 #################  Takeoff Function ####################		
 		
@@ -109,7 +122,7 @@ def takeoff(vehicle,aTargetAltitude):
     #  after Vehicle.simple_takeoff will execute immediately).
     while True:
         print(" Altitude: ", vehicle.location.global_relative_frame.alt)
-        if vehicle.location.global_relative_frame.alt>=aTargetAltitude*0.925:
+        if vehicle.location.global_relative_frame.alt>=aTargetAltitude*0.90:
         
         #Trigger just below target alt.
             print("Reached target altitude")
